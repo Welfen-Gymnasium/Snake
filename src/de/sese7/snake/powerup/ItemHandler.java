@@ -7,8 +7,7 @@ import java.util.Random;
 
 import javax.swing.Timer;
 
-import de.sese7.snake.frame.ItemCreator;
-import de.sese7.stats.Stats;
+import de.sese7.snake.frame.Stats;
 
 public class ItemHandler {
 	
@@ -47,15 +46,16 @@ public class ItemHandler {
 		
 		ItemCreator.powerUp.setLocation(new Point(-50, -50));
 		Random rand = new Random();
-		int pup = rand.nextInt(5) + 1;
-		
+		int pup = rand.nextInt(6) + 1;
+		//System.out.println(pup);
 		switch(pup){
-			case 1: ItemPowerups.speed(); Stats.points = Stats.points + 10; break;
-			case 2: ItemPowerups.slow(); Stats.points = Stats.points + 5; break;
-			case 3: ItemPowerups.lsd(); Stats.points = Stats.points + 15; break;
-			case 4: ItemPowerups.invert(); Stats.points = Stats.points + 20; break;
-			case 5: ItemPowerups.obstacle(); Stats.points = Stats.points + 10; break;
-		} 
-		
+			case 1: ItemPowerups.speed(); Stats.points += 10; break;
+			case 2: ItemPowerups.slow(); Stats.points += 5; break;
+			case 3: ItemPowerups.lsd(); Stats.points += 15; break;
+			case 4: ItemPowerups.invert(); Stats.points += 25; break;
+			case 5: ItemPowerups.obstacle(); Stats.points += 10; break;
+			case 6: ItemPowerups.steelJawbone(); Stats.points += 10; break;
+			case 7: ItemPowerups.superFood(); Stats.points += 10; break;
+		} 	
 	}
 }

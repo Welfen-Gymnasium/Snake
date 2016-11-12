@@ -4,6 +4,8 @@ package de.sese7.snake.event;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import de.sese7.mysql.Login;
+import de.sese7.snake.frame.Spielfeld;
 import de.sese7.snake.main.Main;
 import de.sese7.snake.powerup.ItemHandler;
 import de.sese7.snake.powerup.ItemPowerups;
@@ -11,16 +13,14 @@ import de.sese7.snake.snake.Movement;
 
 public class KeyEventListener implements KeyListener{
 	
-	private int window, lastmove;
+	public static int lastmove;
 	
-	public KeyEventListener(int w){
+	public KeyEventListener(){
 		lastmove = 37;
-		window = w;
 	}
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(window == 1){
 			
 			//System.out.println(e.getKeyCode());
 			
@@ -33,22 +33,32 @@ public class KeyEventListener implements KeyListener{
 					default:
 				}
 				Movement.acceptTurn = false;
-				lastmove = e.getKeyCode();	
+				lastmove = e.getKeyCode();
 			}
 			
 			switch(e.getKeyCode()){
-			case 10: Main.restart(); break;
-			case 27: System.exit(0); break;
-			case 106: ItemHandler.nextPupTime = 1; break;
-			case 107: Movement.t.setDelay(75); break;
-			case 97: ItemPowerups.speed(); break;
-			case 98: ItemPowerups.slow(); break;
-			case 99: ItemPowerups.lsd(); break;
-			case 100: ItemPowerups.invert(); break;
-			case 101: ItemPowerups.obstacle(); break;
+				case 80: Spielfeld.pause(); break;
+				case 10: Main.restart(); break;
+				case 27: System.exit(0); break;
 			}
-		}	
-		
+			
+			if(Login.user != 0){
+				
+				//Cheatcodes (numpad) um powerups zu testen
+				if(Login.user == 2 || Login.user == 3){
+					switch(e.getKeyCode()){
+						case 97:  ItemPowerups.speed(); break;
+						case 98:  ItemPowerups.slow(); break;
+						case 99:  ItemPowerups.lsd(); break;
+						case 100: ItemPowerups.invert(); break;
+						case 101: ItemPowerups.obstacle(); break;
+						case 102: ItemPowerups.steelJawbone(); break;
+						case 103: ItemPowerups.superFood(); break;
+						case 107: Movement.t.setDelay(75); break;
+						case 106: ItemHandler.nextPupTime = 1; break;
+					}
+				}
+			}
 				
 	}
 	

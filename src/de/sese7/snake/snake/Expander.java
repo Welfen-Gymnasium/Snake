@@ -1,8 +1,7 @@
 package de.sese7.snake.snake;
 
-
+import de.sese7.snake.frame.Stats;
 import de.sese7.snake.main.Main;
-import de.sese7.stats.Stats;
 
 public class Expander {
 

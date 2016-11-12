@@ -3,21 +3,25 @@ package de.sese7.snake.powerup;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.Timer;
 
-import de.sese7.snake.frame.ItemCreator;
+import de.sese7.snake.frame.Stats;
 import de.sese7.snake.main.Main;
+import de.sese7.snake.ressources.Sounds;
+import de.sese7.snake.snake.Expander;
 import de.sese7.snake.snake.Movement;
-import de.sese7.stats.Stats;
+import de.sese7.snake.snake.Schlange;
 
 public class ItemPowerups {
 	
 	public static int remPupTime;
-	private static int oldmovement, c;
-	private static Timer t, tLSD;
+	private static int oldmovement, r, g, b;
+	public static Timer t, tLSD;
 	private static Color color;
-	public static boolean inverted;
+	private static Random rand;
+	public static boolean inverted, adds, steelJB, secSteelJB;
 	
 	public static void speed(){
 		remPupTime = 3;
@@ -41,14 +45,18 @@ public class ItemPowerups {
 	
 	public static void lsd(){
 		Stats.pupname = "LSD";
-		remPupTime = 6;
+		remPupTime = 7;
+		Sounds.playSound("LSD.wav");
 		setTimer(3);
 		t.start();
+		adds = true;
+		r = g = b = 0;
+		rand = new Random();
 		
-		tLSD = new Timer( 10, new ActionListener() {
+		tLSD = new Timer( 1, new ActionListener() {
 			public void actionPerformed( ActionEvent e ) {
 				
-				switch(c){
+				/*switch(c){
 					case 0: color = Color.RED; break;
 					case 1: color = Color.GREEN; break;
 					case 2: color = Color.YELLOW; break;
@@ -57,11 +65,38 @@ public class ItemPowerups {
 					case 5: color = Color.ORANGE; break;
 					case 6: color = Color.MAGENTA; break;
 					case 7: color = Color.CYAN; break;
+				}*/
+				//while(colorchanger){
+				int ira;
+				if(adds){
+					ira = rand.nextInt((3 - 1) + 1) + 1;
+				}
+				else{
+					ira = rand.nextInt((6 - 4) + 1) + 4;
 				}
 				
-				Main.sf.getContentPane().setBackground(color);
+				switch(ira){
+					case 1: r = ((r != 255) ? r + 5 : 255); break;
+					case 2: g = ((g != 255) ? g + 5 : 255); break;
+					case 3: b = ((b != 255) ? b + 5 : 255); break;
+					case 4: r = ((r != 0) ? r - 5 : 0); break;
+					case 5: g = ((g != 0) ? g - 5 : 0); break;
+					case 6: b = ((b != 0) ? b - 5 : 0); break;
+				}
 				
-				c = ((c == 7) ? 0 : c + 1);
+				if(r == 255 || g == 255 || b == 255){
+					adds = false;
+				}
+				else if (r == 0 || g == 0 || b == 0){
+					adds = true;
+				}
+				
+				//System.out.println(r + " " + g + " " + b);
+				color = new Color(r, g, b);
+			
+				Main.sf.setColor(color);
+				
+				//c = ((c == 7) ? 0 : c + 1);
 				
 			}
 		});
@@ -73,8 +108,8 @@ public class ItemPowerups {
 		remPupTime = 5;
 		setTimer(4);
 		t.start();
-		Stats.pupname = "Inverted";
-		Main.sf.getContentPane().setBackground(new Color(255, 222, 222));
+		Stats.pupname = "Alcohol";
+		Main.sf.setColor(new Color(255, 222, 222));
 		inverted = true;
 		
 	}
@@ -82,6 +117,30 @@ public class ItemPowerups {
 	public static void obstacle(){
 		ItemCreator.spawnObstacle();
 		Stats.pupname = "- (Obstacle)";
+		ItemHandler.newTime();
+		ItemHandler.t.start();
+	}
+	
+	public static void steelJawbone(){
+		if(ItemCreator.obstacles != 0){
+			Stats.pupname = "Jawbone";
+			steelJB = true;
+			secSteelJB = true;
+		} else {
+			Stats.pupname = "- (Jawbone)";
+			Stats.points += 10;
+			ItemHandler.newTime();
+			ItemHandler.t.start();
+		}
+	}
+	//Kannst du selber weiter machen, is in Movement viel zu kompliziert und überhaupt nicht wiederverwendbar programmiert :P
+	public static void superFood(){
+		for(int i=0; i<3; i++){
+			Stats.food++;
+			Expander.futureExpansions++;
+			Expander.counter[Expander.futureExpansions - 1] = Schlange.registeredBodyParts;
+		}
+		Stats.pupname = "- (Super Food)";
 		ItemHandler.newTime();
 		ItemHandler.t.start();
 	}
@@ -98,6 +157,7 @@ public class ItemPowerups {
 							case 2: remslow(); break;
 							case 3: remlsd(); break;
 							case 4: reminvert(); break;
+							case 5: remSteelJawbone(); break;
 						}
 					
 						ItemHandler.newTime();
@@ -110,26 +170,37 @@ public class ItemPowerups {
 		});		
 	}
 	
-	private static void remspeed() {
+	public static void remspeed() {
 		Stats.pupname = "-";
 		Movement.t.setDelay(oldmovement);
 	}
 	
-	private static void remslow() {
+	public static void remslow() {
 		Stats.pupname = "-";
 		Movement.t.setDelay(oldmovement);
 	}
 	
-	private static void remlsd(){
+	public static void remlsd(){
 		Stats.pupname = "-";
 		tLSD.stop();
-		Main.sf.getContentPane().setBackground(new Color(222, 222, 222));
+		Main.sf.setColor(new Color(222, 222, 222));
 	}
 	
-	private static void reminvert() {
+	public static void reminvert() {
 		Stats.pupname = "-";
 		inverted = false;
-		Main.sf.getContentPane().setBackground(new Color(222, 222, 222));
+		Main.sf.setColor(new Color(222, 222, 222));
 	}
 	
+	public static void remSteelJawbone(){
+		if(secSteelJB){
+			steelJawbone();
+			secSteelJB = false;
+		} else {
+			Stats.pupname = "-";
+			steelJB = false;
+			ItemHandler.newTime();
+			ItemHandler.t.start();
+		}
+	}
 }

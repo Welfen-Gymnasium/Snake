@@ -1,8 +1,5 @@
 package de.sese7.snake.snake;
 
-
-import de.sese7.snake.event.SnakeCollideEvent;
-
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -10,10 +7,14 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import de.sese7.snake.frame.ItemCreator;
+import de.sese7.mysql.Login;
+import de.sese7.snake.event.SnakeCollideEvent;
+import de.sese7.snake.frame.Highscore;
 import de.sese7.snake.frame.Spielfeld;
+import de.sese7.snake.frame.Stats;
+import de.sese7.snake.powerup.ItemCreator;
 import de.sese7.snake.powerup.ItemHandler;
-import de.sese7.stats.Stats;
+import de.sese7.snake.ressources.Sounds;
 import de.sese7.stats.Updater;
 
 public class Movement {
@@ -23,22 +24,26 @@ public class Movement {
 	public static boolean acceptTurn, allowMovement;
 	public static Timer t;
 	
-	
 	public static void setTimer(){
 		t = new Timer( timeout, new ActionListener() {
 			public void actionPerformed( ActionEvent e ) {
-			  
+				
 			  if(allowMovement){
 				  move();
 				  Expander.checkExpand();
 				  Updater.update();
 			  }
-			  else if(Updater.win == false){
+			  else if(!Updater.win && !Spielfeld.pause){
 				  t.stop();
+
+				  if(Login.user != 0){
+					  Highscore.insertResults();
+				  }
+				  
 				  Spielfeld.lose.setVisible(true);
 				  Spielfeld.lose2.setVisible(true);
-			  }
-			  else{
+			  }			  
+			  else if(!Spielfeld.pause){
 				  t.stop();
 				  Spielfeld.lose.setText("Gewonnen");
 				  Spielfeld.lose.setForeground(Color.GREEN);
@@ -52,6 +57,14 @@ public class Movement {
 	}
 	
 	private static void move(){
+		
+		if(SnakeCollideEvent.checkOutOfField()){
+			return;
+		}
+		if(SnakeCollideEvent.checkObstacleCollision()){
+			return;
+		}
+		
 		int lenght = Schlange.registeredBodyParts;
 		int xmove, ymove;
 
@@ -91,6 +104,7 @@ public class Movement {
 		}
 		
 		if(SnakeCollideEvent.checkItemCollision(ItemCreator.snakeExpander)){
+			Sounds.playSound("collect/eat.wav");
 			Stats.food++;
 			Stats.points = Stats.points + 5;
 			ItemCreator.moveSnakeBlock();
@@ -98,11 +112,9 @@ public class Movement {
 			Expander.counter[Expander.futureExpansions - 1] = Schlange.registeredBodyParts;
 		}
 		if(SnakeCollideEvent.checkItemCollision(ItemCreator.powerUp)){
+			Sounds.playSound("collect/collect.wav");
 			ItemHandler.pupHit();
 		}
-		
-		SnakeCollideEvent.checkOutOfField();
-		SnakeCollideEvent.checkObstacleCollision();
 		SnakeCollideEvent.checkBodyBlockCollision();
 		acceptTurn = true;
 		

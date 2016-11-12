@@ -1,7 +1,8 @@
 package de.sese7.stats;
 
-import de.sese7.snake.frame.ItemCreator;
+import de.sese7.snake.frame.Stats;
 import de.sese7.snake.main.Main;
+import de.sese7.snake.powerup.ItemCreator;
 import de.sese7.snake.powerup.ItemHandler;
 import de.sese7.snake.powerup.ItemPowerups;
 import de.sese7.snake.snake.Expander;
@@ -15,8 +16,6 @@ public class Updater {
 	public static void update(){
 		
 		double speed = (double) 1000 / (double) Movement.t.getDelay();
-		
-		Main.sf.requestFocus();
 		
 		Stats.lenght.setText("Länge: " + Schlange.registeredBodyParts);
 		Stats.foodl.setText("Food: " + Stats.food);
@@ -32,6 +31,8 @@ public class Updater {
 			Movement.allowMovement = false;
 			win = true;
 		}
+		
+		Main.mainframe.requestFocus();
 		
 	}
 	

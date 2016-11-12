@@ -2,20 +2,13 @@ package de.sese7.snake.snake;
 
 import javax.swing.JPanel;
 
-import de.sese7.snake.graphics.Block;
+import de.sese7.snake.ressources.Block;
 
 
 public class Schlange {
 	
 	public static int registeredBodyParts;
 	public static Block[] body;
-	
-	public Schlange(){
-		
-		registeredBodyParts = 0;
-		body = new Block[3600];	
-		
-	}
 	
 	public static JPanel regNewBodyPart(int i, int x, int y){
 		
@@ -28,6 +21,35 @@ public class Schlange {
 		return(bp);
 		
 	}
+	
+	public static void reset() {
+		int x = 280;
+		for(int i = 0; i < registeredBodyParts; i++){
+			if(i < 10){
+				body[i].setLocation(x, 280);
+				
+				if(i != 0 && i != 9){
+					body[i].changeImage(3);
+				}
+				else if(i == 0){
+					body[i].changeImage(13);
+				}
+				else{
+					body[i].changeImage(11);
+				}
+				
+				x = x - 20;
+			}
+			else{
+				//Debug
+				body[i].setVisible(false);
+				//body[i].repaint();				
+				body[i] = null;
+				
+			}
+		}
+		registeredBodyParts = 10;		
+	}	
 
 	public static void updateBlocks(int i) {
 		
@@ -108,6 +130,6 @@ public class Schlange {
 			
 		}
 		
-	}	
+	}
 	
 }
